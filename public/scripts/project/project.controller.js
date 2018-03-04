@@ -2,41 +2,36 @@
   'use strict';
 
   ng.module('TaskTracker.Project')
-    .controller('TaskTrackerProjectController', TaskTrackerProjectController);
+    .controller('taskTrackerProjectController', taskTrackerProjectController);
 
-    TaskTrackerProjectController.$inject = ['$http'];
-    function TaskTrackerProjectController($http) {
+    taskTrackerProjectController.$inject = ['taskTrackerProjectService'];
+    function taskTrackerProjectController(projectService) {
       
-      var vm = this;
-      var PROJECT_API_URL = '/project';
+      var vm = this;      
       vm.submitNewProject = submitNewProject;
       vm.selectProjectToEdit = selectProjectToEdit;
       vm.cancelEditing = cancelEditing;
       vm.saveProject = saveProject;
       vm.selectProjectToDelete = selectProjectToDelete;
-      getProjectList();
+
+      activate();
+      
+
+      ///////////////////// methods definitions //////////////////
+      function activate() {
+        getProjectList();
+      }
   
       function getProjectList() {
-        $http.get(PROJECT_API_URL)
-          .then(function (res) {
-            vm.projectList = res && res.data;
+        projectService.getList()
+          .then(function (data) {
+            vm.projectList = data;
           })
-          .catch(function (err) {
-            console.error(err);
-          });;
       }
   
       function submitNewProject(newProject) {
-        // console.log(newProject);
-        $http.post(PROJECT_API_URL, newProject)
-          .then(function () {
-            //console.log(arguments);
-            getProjectList();
-          })
-          .catch(function (err) {
-            console.error(err);
-          });
-        // helperClearObject(newProject);
+        projectService.create(newProject)
+          .then(getProjectList);
       }
   
       function selectProjectToEdit(selectedIndex) {
@@ -50,16 +45,9 @@
       }
   
       function saveProject(targetProject) {
-        $http.put(PROJECT_API_URL, targetProject)
-          .then(function () {
-            getProjectList();
-          })
-          .catch(function (err) {
-            console.error(err);
-          })
-          .finally(function () {
-            vm.isEditting = false;
-          });
+        projectService.update(targetProject)
+         .then(getProjectList)
+         .finally(cancelEditing);
       }
   
       function selectProjectToDelete(selectedIndex) {
@@ -68,22 +56,10 @@
       }
   
       function deleteProject(targetProject) {
-        var deleteURL = PROJECT_API_URL + '/' + targetProject._id;
-        $http.delete(deleteURL)
-          .then(function () {
-            getProjectList();
-          })
-          .catch(function (err) {
-            console.error(err);
-          });
-  
+        projectService.delete(targetProject)
+          .then(getProjectList);
       }
-  
-      // function helperClearObject(targetObj) {
-      //   for(var prop in targetObj) {
-      //     delete targetObj[prop];
-      //   }
-      // }
+
     }
 
 })(angular);

@@ -4,7 +4,7 @@
     .config(['$routeProvider', function ($routeProvider) {
       $routeProvider.when('/task', {
         templateUrl: 'scripts/task/task.template.html',
-        controller: 'TaskTrackerTaskController',
+        controller: 'taskTrackerTaskController',
         controllerAs: 'vm'
       });
     }]);

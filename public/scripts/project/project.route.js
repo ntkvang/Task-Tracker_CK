@@ -4,7 +4,7 @@
     .config(['$routeProvider', function ($routeProvider) {
       $routeProvider.when('/project', {
         templateUrl: 'scripts/project/project.template.html',
-        controller: 'TaskTrackerProjectController',
+        controller: 'taskTrackerProjectController',
         controllerAs: 'vm'
       });
     }]);

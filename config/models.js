@@ -20,14 +20,25 @@ const taskModelConfig = {
   description: {
     type: String
   },
-  project: {
-    type: String
+  projectID: {
+    type: Schema.Types.ObjectId,
+    ref: 'Project'
   },
+  // assigner: {
+
+  // },
   startDate: {
     type: Date
   },
   dueDate: {
     type: Date
+  },
+  status: {
+    type: String,
+    default: 'Undone'
+  },
+  tags: {
+    type: [String]    
   }
 };
 

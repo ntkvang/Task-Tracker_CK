@@ -2,41 +2,43 @@
   'use strict';
 
   ng.module('TaskTracker.Task')
-    .controller('TaskTrackerTaskController', TaskTrackerTaskController);
+    .controller('taskTrackerTaskController', taskTrackerTaskController);
 
-    TaskTrackerTaskController.$inject = ['$http'];
-    function TaskTrackerTaskController($http) {
+    taskTrackerTaskController.$inject = ['taskTrackerTaskService', 'taskTrackerProjectService'];
+    function taskTrackerTaskController(taskService, projectService) {
       
-      var vm = this;
-      var TASK_API_URL = '/task';
+      var vm = this;      
       vm.submitNewTask = submitNewTask;
       vm.selectTaskToEdit = selectTaskToEdit;
       vm.cancelEditing = cancelEditing;
       vm.saveTask = saveTask;
       vm.selectTaskToDelete = selectTaskToDelete;
-      getTaskList();
+      activate();
+
+
+      ///////////////////// methods definitions //////////////////
+      function activate() {
+        getTaskList();
+        getProjectList();
+      }
   
       function getTaskList() {
-        $http.get(TASK_API_URL)
-          .then(function (res) {
-            vm.taskList = res && res.data;
+        taskService.getList()
+          .then(function (data) {
+            vm.taskList = data;
           })
-          .catch(function (err) {
-            console.error(err);
-          });;
+      }
+
+      function getProjectList() {
+        projectService.getList()
+          .then(function (data) {
+            vm.projectList = data;
+          })
       }
   
       function submitNewTask(newTask) {
-        // console.log(newTask);
-        $http.post(TASK_API_URL, newTask)
-          .then(function () {
-            //console.log(arguments);
-            getTaskList();
-          })
-          .catch(function (err) {
-            console.error(err);
-          });
-        // helperClearObject(newTask);
+        taskService.create(newTask)
+          .then(getTaskList);
       }
   
       function selectTaskToEdit(selectedIndex) {
@@ -50,16 +52,9 @@
       }
   
       function saveTask(targetTask) {
-        $http.put(TASK_API_URL, targetTask)
-          .then(function () {
-            getTaskList();
-          })
-          .catch(function (err) {
-            console.error(err);
-          })
-          .finally(function () {
-            vm.isEditting = false;
-          });
+        taskService.update(targetTask)
+         .then(getTaskList)
+         .finally(cancelEditing);
       }
   
       function selectTaskToDelete(selectedIndex) {
@@ -68,22 +63,9 @@
       }
   
       function deleteTask(targetTask) {
-        var deleteURL = TASK_API_URL + '/' + targetTask._id;
-        $http.delete(deleteURL)
-          .then(function () {
-            getTaskList();
-          })
-          .catch(function (err) {
-            console.error(err);
-          });
-  
+        taskService.delete(targetTask)
+        .then(getTaskList);  
       }
-  
-      // function helperClearObject(targetObj) {
-      //   for(var prop in targetObj) {
-      //     delete targetObj[prop];
-      //   }
-      // }
     }
 
 })(angular);
