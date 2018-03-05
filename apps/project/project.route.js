@@ -4,7 +4,6 @@ const router = express.Router();
 
 require('./project.model');
 const ProjectModel = mongoose.model('Project');
-const {ProjectModelConfig} = require('../../config/models');
 
 router.get('/', (req, res) => {
   ProjectModel.find({})
@@ -18,7 +17,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {    
-  let newProject = prepareDBObjectBasedOnModelConfig({}, req.body, ProjectModelConfig);
+  let newProject = formatProjectForCreating(req.body);
   console.log(newProject);
   new ProjectModel(newProject)
     .save()
@@ -38,7 +37,7 @@ router.put('/', (req, res) => {
     _id: req.body._id
   })
     .then(foundProject => {      
-      foundProject = prepareDBObjectBasedOnModelConfig(foundProject, req.body, ProjectModelConfig);
+      foundProject = formatProjectForEditing(foundProject, req.body);
       foundProject.save()
         .then(savedProject => {
           res.json({
@@ -65,13 +64,18 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-function prepareDBObjectBasedOnModelConfig(outputObject, inputObject, modelConfig) {
-  for(var prop in modelConfig) {
-    if(modelConfig.hasOwnProperty(prop)) {
-      outputObject[prop] = inputObject[prop];
-    }
-  }
-  return outputObject;
+function formatProjectForCreating(inputObject) {
+  var resultObject = {};
+  resultObject.name = inputObject.name;
+  resultObject.description = inputObject.description;
+  return resultObject;
 }
+
+function formatProjectForEditing(targetObject, inputObject) {  
+  var resultObject = targetObject;
+  resultObject.name = inputObject.name;
+  resultObject.description = inputObject.description;
+  return resultObject;
+};
 
 module.exports = router;

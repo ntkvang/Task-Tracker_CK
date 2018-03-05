@@ -52,7 +52,7 @@
       }
   
       function saveTask(targetTask) {
-        taskService.update(targetTask)
+        taskService.edit(targetTask)
          .then(getTaskList)
          .finally(cancelEditing);
       }

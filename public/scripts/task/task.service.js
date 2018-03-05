@@ -9,7 +9,7 @@
     service.PROJECT_API_URL = '/task';
     service.getList = getItemList;
     service.create = createItem;
-    service.update = updateItem;
+    service.edit = editItem;
     service.delete = deleteItem;
     return service;
 
@@ -33,7 +33,7 @@
         });
     }
 
-    function updateItem(targetItem) {
+    function editItem(targetItem) {
       return $http.put(service.PROJECT_API_URL, targetItem)
       .then(function (res) {          
         return res && res.data;

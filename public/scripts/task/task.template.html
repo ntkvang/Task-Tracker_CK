@@ -4,10 +4,10 @@
     <input type="text" class="form-control" name="taskName" id="taskName" ng-model="vm.targetTask.name">
   </div>
   <div class="form-group">
-      <label for="projectID">Project</label>
-      <select class="form-control" name="projectID" id="projectID"
+      <label for="projectId">Project</label>
+      <select class="form-control" name="projectId" id="projectId"
         ng-options="project._id as project.name for project in vm.projectList track by project._id"
-        ng-model="vm.targetTask.projectID"></select>
+        ng-model="vm.targetTask.projectId"></select>
     </div>
   <div class="form-group">
     <label for="taskStartDate">Start Date</label>
@@ -26,7 +26,7 @@
   <button ng-show="vm.isEditting" ng-click="vm.cancelEditing(); vm.targetTask = null;" class="btn btn-outline-primary">Cancel</button>
 </form>
 <div ng-repeat="task in vm.taskList track by $index">
-  {{task._id}} - {{task.name}} - {{task.description}} - {{task.createdDate}}
+  {{task._id}} - {{task.name}} - {{task.description}} - {{task.startDate}} - {{task.dueDate}} - {{task.status}} - {{task.project.name}}
   <button class="btn btn-link" ng-click="vm.selectTaskToEdit($index)">
     <i class="fa fa-edit"></i>
   </button>

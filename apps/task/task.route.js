@@ -4,10 +4,10 @@ const router = express.Router();
 
 require('./task.model');
 const TaskModel = mongoose.model('Task');
-const {TaskModelConfig} = require('../../config/models');
 
 router.get('/', (req, res) => {
   TaskModel.find({})
+    .populate('project')
     .then(tasks => {
       res.json(tasks);
     })
@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {    
-  let newTask = prepareDBObjectBasedOnModelConfig({}, req.body, TaskModelConfig);  
+  let newTask = formatTaskForCreating(req.body);  
   new TaskModel(newTask)
     .save()
     .then(newTask => {
@@ -37,7 +37,7 @@ router.put('/', (req, res) => {
     _id: req.body._id
   })
     .then(foundTask => {      
-      foundTask = prepareDBObjectBasedOnModelConfig(foundTask, req.body, TaskModelConfig);
+      foundTask = formatTaskForEditing(foundTask, req.body);
       foundTask.save()
         .then(savedTask => {
           res.json({
@@ -64,13 +64,28 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-function prepareDBObjectBasedOnModelConfig(outputObject, inputObject, modelConfig) {
-  for(var prop in modelConfig) {
-    if(modelConfig.hasOwnProperty(prop)) {
-      outputObject[prop] = inputObject[prop];
-    }
-  }
-  return outputObject;
+function formatTaskForCreating(inputObject) {
+  var resultObject = {};
+  resultObject.name = inputObject.name;
+  resultObject.project = inputObject.projectId;
+  resultObject.description = inputObject.description;
+  resultObject.startDate = inputObject.startDate;
+  resultObject.dueDate = inputObject.dueDate;
+  resultObject.status = inputObject.status;
+  resultObject.tags = inputObject.tags  
+  return resultObject;
+}
+
+function formatTaskForEditing(targetObject, inputObject) {
+  var resultObject = targetObject;
+  resultObject.name = inputObject.name;
+  resultObject.project = inputObject.projectId;
+  resultObject.description = inputObject.description;
+  resultObject.startDate = inputObject.startDate;
+  resultObject.dueDate = inputObject.dueDate;
+  resultObject.status = inputObject.status;
+  resultObject.tags = inputObject.tags  
+  return resultObject;
 }
 
 module.exports = router;

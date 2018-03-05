@@ -45,7 +45,7 @@
       }
   
       function saveProject(targetProject) {
-        projectService.update(targetProject)
+        projectService.edit(targetProject)
          .then(getProjectList)
          .finally(cancelEditing);
       }
