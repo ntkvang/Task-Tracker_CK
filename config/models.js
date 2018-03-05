@@ -20,10 +20,10 @@ const taskModelConfig = {
   description: {
     type: String
   },
-  projectID: {
-    type: Schema.Types.ObjectId,
-    ref: 'Project'
-  },
+  //projectID: {
+  //  type: Schema.Types.ObjectId,
+  //  ref: 'Project'
+  //},
   // assigner: {
 
   // },
