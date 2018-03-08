@@ -6,8 +6,9 @@
   <div class="form-group">
       <label for="projectId">Project</label>
       <select class="form-control" name="projectId" id="projectId"
-        ng-options="project._id as project.name for project in vm.projectList track by project._id"
-        ng-model="vm.targetTask.projectId"></select>
+        ng-model="vm.targetTask.projectId"
+        ng-options="project._id as project.name for project in vm.projectList">
+      </select>
     </div>
   <div class="form-group">
     <label for="taskStartDate">Start Date</label>

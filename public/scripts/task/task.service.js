@@ -11,12 +11,15 @@
     service.create = createItem;
     service.edit = editItem;
     service.delete = deleteItem;
+
+    service.formatDataList = formatDataList;
+    service.formatListItem = formatListItem;
     return service;
 
     function getItemList() {
       return $http.get(service.PROJECT_API_URL)
         .then(function (res) {
-          return res && res.data;
+          return formatDataList(res && res.data);
         })
         .catch(function (err) {
           console.error(err);
@@ -57,5 +60,17 @@
           console.error(err);
         });
     }
+
+    function formatDataList(rawDataList) {
+      rawDataList = rawDataList || [];
+      Array.prototype.forEach.call(rawDataList, formatListItem);
+      return rawDataList;
+    }
+
+    function formatListItem(rawListItem) {
+      rawListItem.projectId = rawListItem.project && rawListItem.project._id;
+      rawListItem.startDate = new Date(rawListItem.startDate);
+      rawListItem.dueDate = new Date(rawListItem.dueDate);
+    };
   }
 })(angular);
