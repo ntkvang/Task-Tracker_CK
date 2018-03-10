@@ -4,12 +4,10 @@
     <input type="text" class="form-control" name="taskName" id="taskName" ng-model="vm.targetTask.name">
   </div>
   <div class="form-group">
-      <label for="projectId">Project</label>
-      <select class="form-control" name="projectId" id="projectId"
-        ng-model="vm.targetTask.projectId"
-        ng-options="project._id as project.name for project in vm.projectList">
-      </select>
-    </div>
+    <label for="projectId">Project</label>
+    <select class="form-control" name="projectId" id="projectId" ng-model="vm.targetTask.projectId" ng-options="project._id as project.name for project in vm.projectList">
+    </select>
+  </div>
   <div class="form-group">
     <label for="taskStartDate">Start Date</label>
     <input type="date" class="form-control" name="taskStartDate" id="taskStartDate" ng-model="vm.targetTask.startDate"></input>
@@ -17,21 +15,39 @@
   <div class="form-group">
     <label for="dueStartDate">Start Date</label>
     <input type="date" class="form-control" name="dueStartDate" id="dueStartDate" ng-model="vm.targetTask.dueDate"></input>
-  </div>  
+  </div>
   <div class="form-group">
-      <label for="taskDescription">Description</label>
-      <textarea class="form-control" name="taskDescription" id="taskDescription" ng-model="vm.targetTask.description"></textarea>
-    </div>
+    <label for="taskDescription">Description</label>
+    <textarea class="form-control" name="taskDescription" id="taskDescription" ng-model="vm.targetTask.description"></textarea>
+  </div>
   <button ng-hide="vm.isEditting" ng-click="vm.submitNewTask(vm.targetTask); vm.targetTask = null;" class="btn btn-primary">Submit</button>
   <button ng-show="vm.isEditting" ng-click="vm.saveTask(vm.targetTask); vm.targetTask = null;" class="btn btn-primary">Save</button>
   <button ng-show="vm.isEditting" ng-click="vm.cancelEditing(); vm.targetTask = null;" class="btn btn-outline-primary">Cancel</button>
 </form>
+<!-- comment section -->
+<div ng-show="vm.isEditting">
+  Comments
+  <ul>
+    <li ng-repeat="comment in vm.targetTask.comments">
+      {{comment.commentBody}} - {{comment.commentDate | date:"MM/dd/yyyy 'at' h:mma"}} <button class="btn btn-link" ng-click="vm.selectCommentToDelete(vm.targetTask, comment)">
+        <i class="fa fa-trash"></i>
+      </button>
+    </li>
+  </ul>
+
+  <div class="form-group">
+    <label for="newComment">Write your comment</label>
+    <textarea class="form-control" name="newComment" id="newComment" ng-model="newComment"></textarea>
+  </div>
+  <button class="btn btn-outline-primary" ng-click="vm.submitNewComment(vm.targetTask, newComment); newComment = undefined">Add</button>
+</div>
+<hr>
 <div ng-repeat="task in vm.taskList track by $index">
-  {{task._id}} - {{task.name}} - {{task.description}} - {{task.startDate}} - {{task.dueDate}} - {{task.status}} - {{task.project.name}}
-  <button class="btn btn-link" ng-click="vm.selectTaskToEdit($index)">
+  {{task._id}} - {{task.name}} - {{task.description}} - {{task.startDate | date:"MM/dd/yyyy 'at' h:mma"}} - {{task.dueDate | date:"MM/dd/yyyy 'at' h:mma"}} - {{task.status}} - {{task.project.name}}
+  <button class="btn btn-link" ng-click="vm.selectTaskToEdit(task)">
     <i class="fa fa-edit"></i>
   </button>
-  <button class="btn btn-link" ng-click="vm.selectTaskToDelete($index)">
+  <button class="btn btn-link" ng-click="vm.deleteTask(task)">
     <i class="fa fa-trash"></i>
   </button>
 </div>

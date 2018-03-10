@@ -17,6 +17,18 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/:id', (req, res) => {
+  TaskModel.findOne({_id: req.params.id})
+    .populate('project')
+    .then(task => {
+      res.json(task);
+    })
+    .catch(err => {
+      console.error(err);
+      res.json(err);
+    });
+});
+
 router.post('/', (req, res) => {    
   let newTask = formatTaskForCreating(req.body);  
   new TaskModel(newTask)
@@ -62,6 +74,45 @@ router.delete('/:id', (req, res) => {
       console.error(err);
       res.json(err);
     });
+});
+
+router.post('/:id/comment/', (req, res) => {
+  TaskModel.findOne({_id: req.params.id})
+  .then(foundTask => {
+    const newComment = {
+      commentBody: req.body.commentBody
+    }
+    foundTask.comments = foundTask.comments || [];
+    foundTask.comments.unshift(newComment);
+
+    foundTask.save()
+    .then(() => {
+      res.json({
+        message: 'The comment was saved successfully.'
+      });
+    });
+  });
+});
+
+router.delete('/:id/comment/:commentId', (req, res) => {
+  TaskModel.findOne({_id: req.params.id})
+  .then(foundTask => {
+    foundTask.comments = foundTask.comments || [];
+    
+    for(var i = 0, iLen = foundTask.comments.length; i < iLen; i++) {
+      if(foundTask.comments[i].id === req.params.commentId) {
+        foundTask.comments.splice(i, 1);
+        break;
+      }
+    }
+
+    foundTask.save()
+    .then(() => {
+      res.json({
+        message: 'The comment was removed successfully.'
+      });
+    });
+  });
 });
 
 function formatTaskForCreating(inputObject) {

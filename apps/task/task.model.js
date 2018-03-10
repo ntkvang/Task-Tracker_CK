@@ -32,7 +32,17 @@ const TaskSchema = new Schema({
   createdDate: {
     type: Date,
     default: Date.now
-  }
+  },
+  comments: [{
+    commentBody: {
+      type: String,
+      required: true
+    },
+    commentDate: {
+      type: Date,
+      default: Date.now
+    }
+  }]
 });
 
 mongoose.model('Task', TaskSchema);

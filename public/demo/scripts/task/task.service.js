@@ -6,18 +6,35 @@
     taskTrackerTaskService.$inject = ['$http']
   function taskTrackerTaskService($http) {
     var service = {};
-    service.PROJECT_API_URL = '/task';
+    service.TASK_API_URL = '/task';
+    service.COMMENT_API_URL_SEGMENT = 'comment'
     service.getList = getItemList;
+    service.getDetail = getDetail;
     service.create = createItem;
     service.edit = editItem;
     service.delete = deleteItem;
 
     service.formatDataList = formatDataList;
     service.formatListItem = formatListItem;
+
+    service.createComment = createComment;
+    service.deleteComment = deleteComment;
     return service;
 
     function getItemList() {
-      return $http.get(service.PROJECT_API_URL)
+      return $http.get(service.TASK_API_URL)
+        .then(function (res) {
+          return formatDataList(res && res.data);
+        })
+        .catch(function (err) {
+          console.error(err);
+        });
+    }
+
+    function getDetail(targetItem) {
+      var targetId = ng.isObject(targetItem)?targetItem._id:targetItem;
+      var detailUrl = [service.TASK_API_URL, targetId].join('/');
+      return $http.get(detailUrl)
         .then(function (res) {
           return formatDataList(res && res.data);
         })
@@ -27,7 +44,7 @@
     }
 
     function createItem(newItem) {
-      return $http.post(service.PROJECT_API_URL, newItem)
+      return $http.post(service.TASK_API_URL, newItem)
         .then(function (res) {          
           return res && res.data;
         })
@@ -37,7 +54,7 @@
     }
 
     function editItem(targetItem) {
-      return $http.put(service.PROJECT_API_URL, targetItem)
+      return $http.put(service.TASK_API_URL, targetItem)
       .then(function (res) {          
         return res && res.data;
       })
@@ -48,7 +65,7 @@
 
     function deleteItem(targetItem) {
       var deleteURLParts = [
-        service.PROJECT_API_URL,
+        service.TASK_API_URL,
         targetItem._id || ''
       ];
       var deleteURL = deleteURLParts.join('/');
@@ -72,5 +89,46 @@
       rawListItem.startDate = new Date(rawListItem.startDate);
       rawListItem.dueDate = new Date(rawListItem.dueDate);
     };
+
+    function createComment(targetItem, newComment) {
+      var taskId = ng.isObject(targetItem)?targetItem._id:targetItem;
+      var requestUrlSegments = [
+        service.TASK_API_URL,
+        taskId,
+        service.COMMENT_API_URL_SEGMENT
+      ];
+      var requestUrl = requestUrlSegments.join('/');
+      var requestBody = {
+        // taskId: ng.isObject(targetItem)?targetItem._id:targetItem,
+        commentBody: newComment
+      }
+      return $http.post(requestUrl, requestBody)
+      .then(function (res) {          
+        return res && res.data;
+      })
+      .catch(function (err) {
+        console.error(err);
+      });
+    }
+
+    function deleteComment(targetItem, targetComment) {
+      var taskId = ng.isObject(targetItem)?targetItem._id:targetItem;
+      var commentId = ng.isObject(targetComment)?targetComment._id:targetComment;
+      var requestUrlSegments = [
+        service.TASK_API_URL,
+        taskId,
+        service.COMMENT_API_URL_SEGMENT,
+        commentId
+      ];
+      var requestUrl = requestUrlSegments.join('/');
+      
+      return $http.delete(requestUrl)
+      .then(function (res) {          
+        return res && res.data;
+      })
+      .catch(function (err) {
+        console.error(err);
+      });
+    }
   }
 })(angular);
