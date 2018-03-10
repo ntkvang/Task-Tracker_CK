@@ -3,7 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-const dbConfig = require('./config/database');
+const keys = require('./config/keys');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,7 +17,7 @@ app.use(express.static('bower_components'));
 
 app.use(bodyParser.json());
 
-mongoose.connect(dbConfig.mongoURI)
+mongoose.connect(keys.mongoURI)
   .then(() => console.log('MongoDB Connected...'))
   .catch(err => console.error(err));
 
