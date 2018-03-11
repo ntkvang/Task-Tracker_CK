@@ -10,12 +10,13 @@ const TaskSchema = new Schema({
     type: String
   },
   project: {
-   type: Schema.Types.ObjectId,
-   ref: 'Project'
+    type: Schema.Types.ObjectId,
+    ref: 'Project'
   },
-  // assigner: {
-
-  // },
+  assignee: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   startDate: {
     type: Date
   },
@@ -27,16 +28,24 @@ const TaskSchema = new Schema({
     default: 'Undone'
   },
   tags: {
-    type: [String]    
+    type: [String]
   },
   createdDate: {
     type: Date,
     default: Date.now
   },
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   comments: [{
     commentBody: {
       type: String,
       required: true
+    },
+    commentUser: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
     },
     commentDate: {
       type: Date,

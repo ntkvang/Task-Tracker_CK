@@ -4,8 +4,8 @@
   ng.module('TaskTracker.Task')
     .controller('taskTrackerTaskController', taskTrackerTaskController);
 
-  taskTrackerTaskController.$inject = ['taskTrackerTaskService', 'taskTrackerProjectService'];
-  function taskTrackerTaskController(taskService, projectService) {
+  taskTrackerTaskController.$inject = ['taskTrackerTaskService', 'taskTrackerProjectService', 'taskTrackerUserService'];
+  function taskTrackerTaskController(taskService, projectService, taskTrackerUserService) {
 
     var vm = this;
     vm.submitNewTask = submitNewTask;
@@ -24,20 +24,28 @@
     function activate() {
       getTaskList();
       getProjectList();
+      getAssigneeList();
     }
 
     function getTaskList() {
       taskService.getList()
         .then(function (data) {
           vm.taskList = data;
-        })
+        });
     }
 
     function getProjectList() {
       projectService.getList()
         .then(function (data) {
           vm.projectList = data;
-        })
+        });
+    }
+
+    function getAssigneeList() {
+      taskTrackerUserService.getList()
+        .then(function (data) {
+          vm.assigneeList = data;
+        });
     }
 
     function submitNewTask(newTask) {

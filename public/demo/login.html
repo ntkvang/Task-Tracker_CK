@@ -4,16 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+  <link rel="stylesheet" href="/demo/bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="/demo/bower_components/font-awesome/web-fonts-with-css/css/fontawesome.css">
   <title>Task Tracker</title>
 </head>
-<body>
-  <div class="container">
-    Welcome to OV Task Tracker
-
-    <br>
+<body ng-app="TaskTracker">
+  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Task Tracker</h5>
     <a href="/user/auth" class="btn btn-danger">Sign In With Google</a>
+  </div>
+  <div class="container">
+    Welcome to Task Tracker
   </div>
 
 </body>

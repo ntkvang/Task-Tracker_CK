@@ -8,6 +8,8 @@ const TaskModel = mongoose.model('Task');
 router.get('/', (req, res) => {
   TaskModel.find({})
     .populate('project')
+    .populate('assignee')
+    .populate('comments.commentUser')
     .then(tasks => {
       res.json(tasks);
     })
@@ -20,6 +22,8 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   TaskModel.findOne({_id: req.params.id})
     .populate('project')
+    .populate('assignee')
+    .populate('comments.commentUser')
     .then(task => {
       res.json(task);
     })
@@ -30,7 +34,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {    
-  let newTask = formatTaskForCreating(req.body);  
+  let newTask = formatTaskForCreating(req);  
   new TaskModel(newTask)
     .save()
     .then(newTask => {
@@ -77,10 +81,11 @@ router.delete('/:id', (req, res) => {
 });
 
 router.post('/:id/comment/', (req, res) => {
-  TaskModel.findOne({_id: req.params.id})
+  TaskModel.findOne({_id: req.params.id})  
   .then(foundTask => {
     const newComment = {
-      commentBody: req.body.commentBody
+      commentBody: req.body.commentBody,
+      commentUser: req.user.id
     }
     foundTask.comments = foundTask.comments || [];
     foundTask.comments.unshift(newComment);
@@ -115,15 +120,18 @@ router.delete('/:id/comment/:commentId', (req, res) => {
   });
 });
 
-function formatTaskForCreating(inputObject) {
+function formatTaskForCreating(responseData) {
+  var inputObject = responseData.body;
   var resultObject = {};
   resultObject.name = inputObject.name;
   resultObject.project = inputObject.projectId;
+  resultObject.assignee = inputObject.assigneeId;
   resultObject.description = inputObject.description;
   resultObject.startDate = inputObject.startDate;
   resultObject.dueDate = inputObject.dueDate;
   resultObject.status = inputObject.status;
-  resultObject.tags = inputObject.tags  
+  resultObject.tags = inputObject.tags;
+  resultObject.createdBy = responseData.user.id;
   return resultObject;
 }
 
@@ -131,11 +139,12 @@ function formatTaskForEditing(targetObject, inputObject) {
   var resultObject = targetObject;
   resultObject.name = inputObject.name;
   resultObject.project = inputObject.projectId;
+  resultObject.assignee = inputObject.assigneeId;
   resultObject.description = inputObject.description;
   resultObject.startDate = inputObject.startDate;
   resultObject.dueDate = inputObject.dueDate;
   resultObject.status = inputObject.status;
-  resultObject.tags = inputObject.tags  
+  resultObject.tags = inputObject.tags;
   return resultObject;
 }
 

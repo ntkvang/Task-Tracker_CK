@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {    
-  let newProject = formatProjectForCreating(req.body);
+  let newProject = formatProjectForCreating(req);
   console.log(newProject);
   new ProjectModel(newProject)
     .save()
@@ -37,7 +37,7 @@ router.put('/', (req, res) => {
     _id: req.body._id
   })
     .then(foundProject => {      
-      foundProject = formatProjectForEditing(foundProject, req.body);
+      foundProject = formatProjectForEditing(foundProject, req);
       foundProject.save()
         .then(savedProject => {
           res.json({
@@ -64,15 +64,18 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-function formatProjectForCreating(inputObject) {
+function formatProjectForCreating(responseData) {
+  var inputObject = responseData.body || {};
   var resultObject = {};
   resultObject.name = inputObject.name;
   resultObject.description = inputObject.description;
+  resultObject.createdBy = responseData.user.id;
   return resultObject;
 }
 
-function formatProjectForEditing(targetObject, inputObject) {  
-  var resultObject = targetObject;
+function formatProjectForEditing(targetProject, responseData) {  
+  var inputObject = responseData.body || {};
+  var resultObject = targetProject;
   resultObject.name = inputObject.name;
   resultObject.description = inputObject.description;
   return resultObject;

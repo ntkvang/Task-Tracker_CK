@@ -86,6 +86,7 @@
 
     function formatListItem(rawListItem) {
       rawListItem.projectId = rawListItem.project && rawListItem.project._id;
+      rawListItem.assigneeId = rawListItem.assignee && rawListItem.assignee._id;
       rawListItem.startDate = new Date(rawListItem.startDate);
       rawListItem.dueDate = new Date(rawListItem.dueDate);
     };

@@ -9,6 +9,11 @@
     </select>
   </div>
   <div class="form-group">
+    <label for="assigneeId">Assignee</label>
+    <select class="form-control" name="assigneeId" id="assigneeId" ng-model="vm.targetTask.assigneeId" ng-options="assignee._id as assignee.email for assignee in vm.assigneeList">
+    </select>
+  </div>
+  <div class="form-group">
     <label for="taskStartDate">Start Date</label>
     <input type="date" class="form-control" name="taskStartDate" id="taskStartDate" ng-model="vm.targetTask.startDate"></input>
   </div>
@@ -29,7 +34,7 @@
   Comments
   <ul>
     <li ng-repeat="comment in vm.targetTask.comments">
-      {{comment.commentBody}} - {{comment.commentDate | date:"MM/dd/yyyy 'at' h:mma"}} <button class="btn btn-link" ng-click="vm.selectCommentToDelete(vm.targetTask, comment)">
+      {{comment.commentBody}} - {{comment.commentDate | date:"MM/dd/yyyy 'at' h:mma"}} - {{comment.commentUser.email}} <button class="btn btn-link" ng-click="vm.selectCommentToDelete(vm.targetTask, comment)">
         <i class="fa fa-trash"></i>
       </button>
     </li>
@@ -43,7 +48,7 @@
 </div>
 <hr>
 <div ng-repeat="task in vm.taskList track by $index">
-  {{task._id}} - {{task.name}} - {{task.description}} - {{task.startDate | date:"MM/dd/yyyy 'at' h:mma"}} - {{task.dueDate | date:"MM/dd/yyyy 'at' h:mma"}} - {{task.status}} - {{task.project.name}}
+  {{task._id}} - {{task.name}} - {{task.description}} - {{task.startDate | date:"MM/dd/yyyy 'at' h:mma"}} - {{task.status}} - {{task.project.name}} - {{task.assignee.email}}
   <button class="btn btn-link" ng-click="vm.selectTaskToEdit(task)">
     <i class="fa fa-edit"></i>
   </button>

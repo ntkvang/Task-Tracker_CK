@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -14,10 +15,10 @@
       <a href="#project" class="p-2 text-dark">Project</a>
       <a href="#task" class="p-2 text-dark">Task</a>
     </nav>
-    <a href="/user/auth" class="btn btn-danger">Sign In</a>
+    <a href="/user/logout" class="btn btn-outline-danger">Log out</a>
   </div>
   <div class="container" ng-controller="MainController as vm">
-      <div ng-view></div>
+      <div ng-view ng-hide="isLoading"></div>
   </div>
     
   <script src="/demo/bower_components/jquery/dist/jquery.js"></script>
@@ -34,5 +35,8 @@
   <script src="/demo/scripts/task/task.route.js"></script>
   <script src="/demo/scripts/task/task.service.js"></script>
   <script src="/demo/scripts/task/task.controller.js"></script>
+
+  <script src="/demo/scripts/user/user.module.js"></script>
+  <script src="/demo/scripts/user/user.service.js"></script>
 </body>
 </html>
