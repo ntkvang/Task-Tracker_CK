@@ -80,6 +80,20 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+router.post('/delete', (req, res) => {
+  const ids = req.body || [];
+  TaskModel.remove({ _id: {$in:ids} })
+  .then(() => {
+    res.json({
+      message: 'Selected tasks was saved successfully.'
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    res.json(err);
+  });
+});
+
 router.post('/:id/comment/', (req, res) => {
   TaskModel.findOne({_id: req.params.id})  
   .then(foundTask => {

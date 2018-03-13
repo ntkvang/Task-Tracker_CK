@@ -34,9 +34,11 @@
   Comments
   <ul>
     <li ng-repeat="comment in vm.targetTask.comments">
-      {{comment.commentBody}} - {{comment.commentDate | date:"MM/dd/yyyy 'at' h:mma"}} - {{comment.commentUser.email}} <button class="btn btn-link" ng-click="vm.selectCommentToDelete(vm.targetTask, comment)">
+      {{comment.commentBody}} - {{comment.commentDate | date:"MM/dd/yyyy 'at' h:mma"}} - {{comment.commentUser.email}}
+      <button
+        class="btn btn-link" ng-click="vm.selectCommentToDelete(vm.targetTask, comment)">
         <i class="fa fa-trash"></i>
-      </button>
+        </button>
     </li>
   </ul>
 
@@ -48,7 +50,9 @@
 </div>
 <hr>
 <div ng-repeat="task in vm.taskList track by $index">
-  {{task._id}} - {{task.name}} - {{task.description}} - {{task.startDate | date:"MM/dd/yyyy 'at' h:mma"}} - {{task.status}} - {{task.project.name}} - {{task.assignee.email}}
+  <input type="checkbox" ng-model="task.checked"> 
+  {{task._id}} - {{task.name}} - {{task.description}} - {{task.startDate | date:"MM/dd/yyyy 'at' h:mma"}} - {{task.status}}
+  - {{task.project.name}} - {{task.assignee.email}}
   <button class="btn btn-link" ng-click="vm.selectTaskToEdit(task)">
     <i class="fa fa-edit"></i>
   </button>
@@ -56,3 +60,6 @@
     <i class="fa fa-trash"></i>
   </button>
 </div>
+<button class="btn btn-outline-danger" ng-click="vm.deleteBulkTasks()" 
+        ng-show="vm.taskList.length"
+        ng-disabled="!vm.canDeleteBulkTasks()">Delete</button>

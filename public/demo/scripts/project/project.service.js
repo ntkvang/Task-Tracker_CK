@@ -11,6 +11,7 @@
     service.create = createItem;
     service.edit = editItem;
     service.delete = deleteItem;
+    service.deleteBulk = deleteBulkItems;
     return service;
 
     function getItemList() {
@@ -51,6 +52,21 @@
       var deleteURL = deleteURLParts.join('/');
       return $http.delete(deleteURL)
         .then(function (res) {
+          return res && res.data;
+        })
+        .catch(function (err) {
+          console.error(err);
+        });
+    }
+
+    function deleteBulkItems(selectedItemsIndex) {
+      var deleteURLParts = [
+        service.PROJECT_API_URL,
+        'delete'
+      ];
+      var deleteURL = deleteURLParts.join('/');
+      return $http.post(deleteURL, selectedItemsIndex)
+        .then(function (res) {          
           return res && res.data;
         })
         .catch(function (err) {

@@ -64,6 +64,20 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+router.post('/delete', (req, res) => {
+  const ids = req.body || [];
+  ProjectModel.remove({ _id: {$in:ids} })
+  .then(() => {
+    res.json({
+      message: 'Selected projects was saved successfully.'
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    res.json(err);
+  });
+});
+
 function formatProjectForCreating(responseData) {
   var inputObject = responseData.body || {};
   var resultObject = {};

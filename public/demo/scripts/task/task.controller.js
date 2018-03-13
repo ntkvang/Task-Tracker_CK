@@ -14,6 +14,8 @@
     vm.saveTask = saveTask;
     // vm.selectTaskToDelete = selectTaskToDelete;
     vm.deleteTask = deleteTask;
+    vm.deleteBulkTasks = deleteBulkTasks;
+    vm.canDeleteBulkTasks = canDeleteBulkTasks;
 
     vm.submitNewComment = submitNewComment;
     vm.selectCommentToDelete = selectCommentToDelete;
@@ -81,6 +83,29 @@
     function deleteTask(targetTask) {
       taskService.delete(targetTask)
         .then(getTaskList);
+    }
+
+    function deleteBulkTasks() {
+      var selectedTaskIds = [];
+      for (var i = 0, iLen = vm.taskList.length; i < iLen; i++) {
+        if (vm.taskList[i].checked) {
+          selectedTaskIds.push(vm.taskList[i]._id);
+        }
+      }
+      taskService.deleteBulk(selectedTaskIds)
+        .then(getTaskList);
+    }
+
+    function canDeleteBulkTasks() {
+      if (!vm.taskList) {
+        return false;
+      }
+      for (var i = 0, iLen = vm.taskList.length; i < iLen; i++) {
+        if (vm.taskList[i].checked) {
+          return true;
+        }
+      }
+      return false;
     }
 
     function submitNewComment(targetTask, newComment) {

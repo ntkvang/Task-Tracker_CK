@@ -12,11 +12,15 @@
   <button ng-show="vm.isEditting" ng-click="vm.cancelEditing(); vm.targetProject = null;" class="btn btn-outline-primary">Cancel</button>
 </form>
 <div ng-repeat="project in vm.projectList track by $index">
+  <input type="checkbox" ng-model="project.checked">
   {{project._id}} - {{project.name}} - {{project.description}} - {{project.createdDate}}
   <button class="btn btn-link" ng-click="vm.selectProjectToEdit($index)">
     <i class="fa fa-edit"></i>
   </button>
-  <button class="btn btn-link" ng-click="vm.selectProjectToDelete($index)">
+  <button class="btn btn-link" ng-click="vm.deleteProject(project)">
     <i class="fa fa-trash"></i>
   </button>
 </div>
+<button class="btn btn-outline-danger" ng-click="vm.deleteBulkProjects()" 
+        ng-show="vm.projectList.length"
+        ng-disabled="!vm.canDeleteBulkProbjects()">Delete</button>
