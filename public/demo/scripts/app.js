@@ -10,7 +10,6 @@
     .factory('errorHandlerInterceptor', errorHandlerInterceptor)
     .controller('MainController', MainController);
 
-
   configurationStage.$inject = ['$locationProvider', '$httpProvider'];
   function configurationStage($locationProvider, $httpProvider) {
     $locationProvider.hashPrefix('');
@@ -29,7 +28,6 @@
       }
     };
   }
-
   MainController.$inject = ['$rootScope', '$scope', '$http'];
   function MainController($rootScope, $scope, $http) {
 

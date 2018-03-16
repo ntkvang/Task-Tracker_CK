@@ -62,7 +62,6 @@
       projectService.delete(targetProject)
         .then(getProjectList);
     }
-
     function deleteBulkProjects() {
       var selectedProjectIndex = [];
       for (var i = 0, iLen = vm.projectList.length; i < iLen; i++) {

@@ -1,0 +1,325 @@
+<!-- Breadcrumbs-->
+<!--<div class="card-header" ng-controller="TaskCtrl">-->
+    <div class="card-body" ng-controller="TaskCtrl">
+            <menu type="toolbar" class="action-bar">
+                <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#exampleModalCenter" ng-click="addTaskFunction()" ng-hide="search">
+                    <i class="fa fa-plus"></i>Add
+                </button>
+                <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModalDeleteAll" ng-hide="search" ng-disabled="!countCheckedDelete()">
+                    <i class="fa fa-trash-o"></i>Delete
+                </button>
+                <button type="button" class="btn btn-outline-info " ng-click="search = true" ng-hide="search">
+                    <i class="fa fa-search"></i>Search
+                </button>
+            </menu>
+        <div class="search" ng-show="search">
+            <input class="form-control" type="text" id="search" ng-model="searchText"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-outline-dark" type="submit" ng-click="search = !search">
+                  <span class="fa fa-close"></span>
+                 </button>
+                </span>
+        </div>
+        <div class="table table-responsive">
+         <table class="table table-bordered">
+            <thead>
+            <tr class="text-center">
+                <th style="width: 3%"><input type="checkbox" ng-model="selectedAll" ng-click="checkAll()"/></th>
+                <th style="width: 4%;">STT</th>
+                <th style="width: 10%;">Name</th>
+                <th style="width: 14%;">Description</th>
+                <th style="width: 16%;">Assigner</th>
+                <th style="width: 5%">Start date</th>
+                <th style="width: 5%;">Due date</th>
+                <th style="width: 10%">Project name</th>
+                <th style="width: 5%">Status</th>
+                <th style="width: 8%;">Tags</th>
+                <th style="width: 8%">Comment</th>
+                <th style="width: 12%;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--<tr ng-repeat="task in tasks | filter:searchText| startForm: currentPage*pageSize| limitTo: pageSize">-->
+            <tr ng-repeat="task in tasks | filter:searchText:strict| limitTo: pageSize: currentPage*pageSize">
+            <!--Sizeng-repeat="task in tasks"> &lt;!&ndash;tasks = [1, 2, 3]&ndash;&gt;--><!--<td><input type="checkbox" ng-model=""></td>-->
+                <td ><input type="checkbox"  ng-model="task.selected" ng-click="checkIndividualTask()"></td>
+                <td>{{$index+1}}</td>
+                <td>{{task.name}}</td>
+                <td>{{task.description}}</td>
+                <td>{{task.assigner}}</td>
+                <td>{{task.startdate|date:"dd/MM/yyyy"}}</td>
+                <td>{{task.duedate|date:'dd/MM/yyyy'}}</td>
+                <td>{{task.projectname}}</td>
+                <td><span class="progress-bar" ng-class="labelColor(task.status)">{{task.status}}</span></td>
+                <!--<td>{{task.tags}}</td>-->
+                <td>
+                    <span ng-repeat="tag in task.tags track by tag.name" class="tag-name">
+                        <span ng-click="tag.action(task)">{{tag.name}}</span>
+                          <span class="delete-tag">&times;</span>
+                    </span>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-lg btn-info btn-sm" data-toggle="modal" data-target="#exampleModalCenterComment" ng-click="selectTask(task, $index)">
+                        <i class="fa fa-comment fa-2x"></i>
+                    </button>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-info btn-sm"  data-toggle="modal" data-target="#exampleModal" ng-click="selectTask(task, $index)">
+                        <i class="fa fa-pencil"></i>Edit
+                    </button>
+                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#exampleModalDelete1">
+                        <i class="fa fa-trash-o"></i>Delete
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+
+        <!-- Modal -- create-->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Create Task</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="align-content-center"  name="addForm">
+                            <div class="form-group">
+                                <label  class="font-weight-bold">Name</label>
+                                <input type="text" class="form-control" placeholder="Task name" ng-model="addTask.name" name="name" required/>
+                                    <p ng-show="addForm.name.$invalid && !addForm.name.$pristine"> You task name required </p>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">
+                                    Description</label>
+                                <textarea class="form-control"  ng-model="addTask.description"></textarea>
+                            </div>
+                            <div class="form-group">
+                               <label class="font-weight-bold">Assigner</label>
+                                <select class="form-control" ng-model="addTask.assigner" ng-options="item.name as item.name for item in users"></select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label  class="font-weight-bold">Start
+                                        date</label>
+                                    <div class="input-group date" id="datetimepicker1">
+                                        <input type="date" class="form-control" name="addTask.Startdate" id="startdate" placeholder="" ng-model="addTask.startdate">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="font-weight-bold">Due date</label>
+                                    <div clas="input-group date" id="datetimepicker2">
+                                        <input type="date" class="form-control"  id="duetdate" placeholder="" ng-model="addTask.duedate">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Project name</label>
+                                <input type="text" class="form-control" id="projectname" ng-model="addTask.projectname"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Status</label>
+                                <select class="form-control" ng-model="addTask.status" ng-options="item.name as item.name for item in statususer">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Tags</label>
+                                <div class="tag-input-ctn">
+                                    <div ng-repeat="(key,tag) in inputTags" class="input-tag">
+                                        {{tag.name}}
+                                        <div class="delete-tag" ng-click="deleteTag(key)">&times;</div>
+                                    </div>
+                                    <!--<input type="text" data-tag-input="" data-ng-model="addTask.tags" data-ng-style="{width:inputWidth}" data-new-tag="addTag()" data-delete-tag="deleteTag()">-->
+                                    <input type="text" tag-input="" ng-model="addTask.tags" ng-style="{width:inputWidth}" new-tag="addTagFunc(addTask.tags, inputTags);addTask.tags='';" delete-tag="deleteTag()" style="margin-top: 5px">
+                                </div>
+                                <!--<input type="text" value=""  class="form-control" data-role="tagsinput">-->
+                            </div>
+                            <!--ngTagsinput-->
+                            <!--<ng-tags-input></ng-tags-input>-->
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-outline-success" data-dismiss="modal" ng-disabled="addForm.$invalid" ng-click="saveTask()"><i class="fa fa-plus"></i>Add</button>
+                                <button type="button" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-times"></i>Cancel</button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Modal crate-->
+        <!--Modal --delete1-->
+        <div class="modal fade" id="exampleModalDelete1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle1">Delete Task</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                       <p style="color: #8b222a"> Do you want delete {{clickedTask.name}}???</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal" ng-click="delete()">Yes</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Modal delete1-->
+        <!--modal deleteAll-->
+        <div class="modal fade" id="exampleModalDeleteAll" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLonAll">Delete Task</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p> Do you want {{clickedTask.countCheckedDelete()}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal" ng-click="remove()">Yes</button>
+                        <button type="button" class="btn btn-outline-secondary"  data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal DeleteAll-- >
+        <!--Modal Edit-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="align-content-center" name="editForm" novalidate>
+                            <div class="form-group">
+                                <label  class="font-weight-bold">Name</label>
+                                <input type="text" class="form-control" placeholder="" required ng-model="clickedTask.name" name="name"/>
+                                <p ng-show="editForm.name.$invalid && !editForm.name.$pristine"> You task name required</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">
+                                    Description</label>
+                                <textarea class="form-control" ng-model="clickedTask.description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Assigner</label>
+                                <select class="form-control" ng-model="clickedTask.assigner" ng-options="item.name as item.name for item in users"></select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label  class="font-weight-bold">Start date</label>
+                                    <div class="input-group date" id="datetimepicker3">
+                                        <input type="date" class="form-control" id="startdate1" placeholder="" ng-model="clickedTask.startdate">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label  class="font-weight-bold">Due date</label>
+                                    <div clas="input-group date" id="datetimepicker">
+                                        <input type="date" class="form-control" id="duetdate1" placeholder="" ng-model="clickedTask.duedate">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  class="font-weight-bold">Project name</label>
+                                <input type="text" class="form-control" id="projectname1" placeholder="" ng-model="clickedTask.projectname">
+                            </div>
+                            <div class="form-group">
+                                <label  class="font-weight-bold">Status</label>
+                                <select type="text" class="form-control" ng-model="clickedTask.status" ng-options=" item.name as item.name for item in statususer"></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Tags</label>
+                                <div class="tag-input-ctn" class="form-control" >
+                                    <!--<div data-ng-repeat="(key,tag) in inputTags" class="input-tag">-->
+                                        <!--{{tag.name}}-->
+                                        <!--<div class="delete-tag" ng-click="deleteTag(key)">&times;</div>-->
+                                    <!--</div>-->
+                                    <!--<input type="text" data-tag-input="" data-ng-model="clickedTask.tags" data-ng-style="{width:inputWidth}" data-new-tag="addTag()" data-delete-tag="deleteTag()">-->
+                                    <div ng-repeat="(key,tag) in clickedTask.tags" class="input-tag">
+                                        {{tag.name}}
+                                        <div class="delete-tag" ng-click="deleteTagEdit(key)">&times;</div>
+                                    </div>
+                                    <input type="text" tag-input="" ng-model="newTag" ng-style="{width:inputWidth}" new-tag="addTagFunc(newTag, clickedTask.tags);newTag='';" delete-tag="deleteTagEdit()">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-primary" data-dismiss="modal" ng-click="update()" ng-disabled="editForm.$invalid"><i class="fa fa-save"></i>Save</button>
+                                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i class="fa fa-times"></i>Cancel</button>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--End Modal edit-->
+        <!--Modal comment-->
+        <div class="modal fade" id="exampleModalCenterComment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <p class="modal-title" id="exampleModalLabelComment">Comment</p>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--<text-angular ng-model="addTask.comments" required class=""></text-angular>-->
+                        <text-angular ng-model="newComment" required class=""></text-angular>
+                        <hr/>
+                        <h3>{{clickedTask.comments.length}} Comments</h3>
+                        <ul>
+                            <li ng-repeat="comment in clickedTask.comments">
+                                <p ng-bind-html="comment.text"></p>
+                                <p class="small">
+                                    <a id="deleteComment" ng-click="deleteComment()">Delete comment</a>
+                                </p>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" ng-click="saveComment(newComment); newComment = undefined;">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End modal comment-->
+        <nav aria-label="..." class="pagination pull-right">
+            <ul  class="pagination">
+                <li class="page-item" ng-class="{'disabled': currentPage === 0}">
+                    <!--<a class="page-link" href ng-click="currentPage=currentPage-1">Previous</a>-->
+                    <a class="page-link" href ng-click="prePage()">Previous</a>
+                </li>
+                <!--<li class="page-item" ng-repeat="n in range(numberOfPage(),currentPage,currentPage + gap)" ng-class="{active: n== currentPage}">-->
+                    <!--<a href ng-click="setPage()" class="page-link">{{ n+1 }}</a>-->
+                <!--</li>-->
+                <li class="page-item" ng-repeat="n in pagination track by n" ng-class="{active: n === currentPage}">
+                    <a href ng-click="setPage()" class="page-link">{{ n+1 }}</a>
+                </li>
+                <li class="page-item" ng-class="{'disabled' : (currentPage) == numberOfPage()-1}">
+                    <a href class="page-link" ng-click="nextPage()">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+<!--</div>-->
+
+
+
+
+

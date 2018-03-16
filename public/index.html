@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Task Tracker</title>
+    <link rel="shortcut icon" type="image/x-icon" href="logo_icon.png">
+    <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">-->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--<link href="bower_components/ngTaginput/ng-tags-input.min.css" rel="stylesheet">-->
+    <!--<link href="bower_components/bootstrap-tagInput/tagsinput.css">-->
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!--<link href="bower_components/datatables/dataTables.bootstrap4.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
+    <link href="bower_components/css/sb-admin.css" rel="stylesheet">
+    <link href="styles/style.css" rel="stylesheet">
+    <link href="bower_components/textAngular/dist/textAngular.css" rel="stylesheet">
+</head>
+<body class="fixed-nav sticky-footer navbar-dark bg-light" id="page-top" style="" ng-controller="MainCtrl">
+<!--<body class="fixed-nav sticky-footer navbar-dark bg-light" id="page-top" style="" ng-controller="MainCtrl">-->
+<!-- Navigation-->
+<div>
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav" style="background-color: #005cbf;color: white;">
+    <a class="navbar-brand" href="index.html">Task Tracker</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar navbar-expand-lg navbar-sidenav" id="exampleAccordion" >
+            <li data-placement="right"class="nav-item" data-toggle="tooltip">
+                <a class="nav-link" href="#/task" ng-class="{active: isAction('/task')}">
+                    <i class="fa fa-fw fa-dashboard"></i>
+                    <span class="nav-link-text">Task Management</span>
+                </a>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
+                <a class="nav-link" href="#/project"  ng-class="{active: isAction('/project')}">
+                    <i class="fa fa-product-hunt"></i>Project Management
+                </a>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables" >
+                <a class="nav-link" href="#/timeline" ng-class="{active:isAction('/timeline')}">
+                    <i class="fa fa-fw fa-table"></i>
+                    <span class="nav-link-text">Time-line</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fa fa-user-circle fa-2x"></i>
+                </a>
+                <!-- /.dropdown-user -->
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+                    <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+    <!--<nav class="navbar navbar-expand-lg fixed-top" id="mainNav" style="background-color: #005cbf;color: white;">-->
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#/timeline">Home</a>
+            </li>
+            <li class="breadcrumb-item">{{ getAppName() }}</li>
+            {{ appName }}
+        </ol>
+        <!-- Breadcrumbs-->
+        <div class="" ng-view="">
+        </div>
+        <footer class="sticky-footer">
+            <div class="container">
+                <div class="text-center">
+                    <small>Copyright © Your Website 2018</small>
+                </div>
+            </div>
+        </footer>
+        <!-- Scroll to Top Button-->
+        <!-- Logout Modal-->
+    </div>
+</div>
+<!-- Bootstrap core JavaScript-->
+<script src="bower_components/lodash/lodash.js"></script>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<!--<script src="bower_components/bootstrap-tagInput/tagsinput.js"></script>-->
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/angular-route/angular-route.min.js"></script>
+<!--<script src="bower_components/ngTaginput/ng-tags-input.min.js"></script>-->
+<!--<script src="bower_components/ui-bootstrap/ui-bootstrap-tpls-2.5.0.min.js"></script>-->
+<script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/textAngular/dist/textAngular-rangy.min.js"></script>
+<script src="bower_components/textAngular/dist/textAngular-sanitize.min.js"></script>
+<script src="bower_components/textAngular/dist/textAngular.min.js"></script>
+<script src="scripts/app.js"></script>
+<script src="scripts/project/controller/project.js"></script>
+<script src="scripts/task/controller/task.js"></script>
+<script src="scripts/angular-bootstrap-demo.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "tasktracker",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Vang Nguyen <ntkvang197@gmai.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.8",
+    "jquery": "^3.3.1",
+    "bootstrap": "^4.0.0",
+    "font-awesome": "^4.7.0",
+    "lodash": "^4.17.4",
+    "angular-route": "^1.6.8",
+    "angular-ui-bootstrap": "^2.5.6"
+  }
+}

@@ -27,9 +27,11 @@ const TaskSchema = new Schema({
     type: String,
     default: 'Undone'
   },
-  tags: {
-    type: [String]
-  },
+  tags: [{
+	  name: {
+		type: String
+	  }
+  }],
   createdDate: {
     type: Date,
     default: Date.now

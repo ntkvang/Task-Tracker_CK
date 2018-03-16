@@ -1,0 +1,181 @@
+
+<div class="card-body" ng-controller="projectCtrl">
+    <menu type="toolbar" class="toolbarProject">
+        <button type="button" class="btn btn-outline-info" data-toggle="modal"  style="float: right; margin-left: 0.5rem" ng-click="search=true" ng-hide="search" >
+            <i class="fa fa-search"></i> Search
+        </button>
+        <div ng-show="search">
+            <!--<input type="text" ng-model="searchText" style="margin-bottom: 20px; float: right;"/>-->
+            <input class="form-control" type="text" id="search" ng-model="searchText"/>
+            <span class="input-group-btn">
+                    <button class="btn btn-outline-dark" type="submit" ng-click="search = !search">
+                  <span class="fa fa-close"></span>
+                 </button>
+            </span>
+        </div>
+        <!--<button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#myModalDelete" style="float: right;margin-bottom: 0.5rem" ng-disabled="!selectedList.length" ng-hide="search">-->
+        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#myModalDelete" style="float: right;margin-bottom: 0.5rem" ng-disabled="!countCheckedDelete()" ng-hide="search">
+            <i class="fa fa-trash"></i> Delete
+        </button>
+        <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#myModal" ng-click="prepareCreateForm()" style="float :right; margin-right: 0.5rem" ng-hide="search">
+            <i class="fa fa-plus"></i> Add
+        </button>
+    </menu>
+    <div class="table-responsive" style="overflow-y: auto; height: 500px;">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th style="width: 3%">
+                    <!--<input type="checkbox" ng-model="selectAll" ng-checked="selectedList.length === projects.length" ng-click="checkAll()"/>-->
+                    <input type="checkbox" ng-model="selectAll"  ng-click="checkAll()"/>
+                </th>
+                <th scope="col" style="width: 4%;">ID</th>
+                <th scope="col" style="width: 40%;">Name</th>
+                <th scope="col" style="width: 40%">Description</th>
+                <th scope="col" style="width: 12%">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="p in projects |filter: searchText|limitTo: itemsPerPage: itemsPerPage*(currentPage)">
+                <td>
+                    <!--<input type="checkbox" ng-checked="exist(p)" ng-click="toggleSelection(p)" ng-model="p.selected"/>-->
+                    <input type="checkbox" ng-model="p.selected" ng-click="setCheckAll(p)"/>
+                </td>
+                <td scope="col">{{$index+1}}</td>
+                <td scope="col">{{p.name}}</td>
+                <td scope="col">{{p.description}}</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#myModalEdit" ng-click="selectProject(p, $index)">
+                        <i class="fa fa-pencil"></i>Edit
+                    </button>
+
+                    <!--<button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#myModalDelete" ng-click="selectProject(p)">-->
+                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#myModalDelete1">
+                        <i class="fa fa-trash"></i>Delete
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <ul style="margin-top: 20px;" uib-pagination class="pagination-sm pull-right" items-per-page="itemsPerPage" total-items="projects.length" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" num-pages="numPages"></ul>
+    <!-- The Modal -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Create Project</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form name="myForm" novalidate>
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name" ng-model="newproject.name" required autofocus>
+                            <span style="color: red" ng-show="myForm.name.$dirty && myForm.name.$invalid">
+                            <span ng-show="myForm.name.$error.required"> name is required</span>
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <textarea type="text" class="form-control" rows="5" id="description" name="description" ng-model="newproject.description"></textarea>
+                        </div>
+                    </form>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-success" ng-click="saveProject()" data-dismiss="modal" ng-disabled="myForm.$invalid">
+                            <i class="fa fa-plus"></i> Create
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">
+                            <i class="fa fa-times"></i> Cancel
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal fade" id="myModalEdit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Project</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" class="form-control" id="ten" name="ten" ng-model="clickedProject.name">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea type="text" class="form-control" rows="5" id="d"  name="d" ng-model="clickedProject.description"></textarea>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" ng-click="editProject()" data-dismiss="modal">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">
+                        <i class="fa fa-times"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModalDelete1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Project</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <p>Bạn có muốn xóa project {{clickedProject.name}} ? </p>
+
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal" ng-click="delete()">Yes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModalDelete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Project</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <p>Bạn có muốn xóa project {{clickedProject.name}} ? </p>
+
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal" ng-click="deleteProject()">Yes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
