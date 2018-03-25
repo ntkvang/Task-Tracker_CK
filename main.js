@@ -40,11 +40,10 @@ mongoose.connect(keys.mongoURI)
 
 //check for user's authorization
 app.use((req, res, next) => {
-  if (req.isAuthenticated() ||
+ if (req.isAuthenticated() ||
     urlWhiteList.indexOf(req.path) > -1) {
     return next();
-  }
-  res.send(401, 'Unauthorized');
+  }  res.send(401, 'Unauthorized');
 });
 
 app.use('/user', userRoute);

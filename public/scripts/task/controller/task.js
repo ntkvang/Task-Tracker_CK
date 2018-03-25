@@ -5,10 +5,7 @@
             $scope.itemsPerPage = 10;
             $scope.maxSize = 5;
             $scope.currentPage = 1;
-            $scope.reloadData=function () {
-                $route.reload();
 
-            };
             $scope.addTask = {};
             $scope.clickedTask = {};
             $scope.name = '';
@@ -269,6 +266,17 @@
                 // goi API get project
                 $scope.addTask = {};
                 $scope.addTask.tags = [];
+                $http.get('/user')
+                    .then(function (res) {
+                        if (res && res.data && res.data.length > 0) {
+                            // nho reformat data
+                            $scope.users= res.data;
+                        }
+                    })
+                    .catch(function (err) {
+                        console.error(err);
+                    });
+
                 $http.get('/project')
                     .then(function (res) {
                         if (res && res.data && res.data.length > 0) {
@@ -337,17 +345,26 @@
 
             };
 
-            $scope.checkIndividualTask = function (task) {
-                /* $scope.tasks la so luong task o 1 trang (neu co phan trang) */
-                // var countChecked = $scope.tasks.filter(function (t){
-                //     return (t.selected === true);
-                // });
+            // $scope.checkIndividualTask = function () {
+            //
+            //     var countChecked = _.filter($scope.tasks, function (task) {
+            //         return task.selected;
+            //     });
+            //
+            //     $scope.selectedAll = (countChecked.length === $scope.tasks.length);
+            // };
+            $scope.setCheckAll = function (task) {
+                if ($scope.selectAll && !task.selected) {
+                    $scope.selectAll = false;
 
-                var countChecked = _.filter($scope.tasks, function (t) {
-                    return t.selected;
+                }
+                var checkCount = 0;
+                angular.forEach($scope.tasks, function (p) {
+                    if (p.selected) {
+                        checkCount++;
+                    }
                 });
-
-                $scope.selectedAll = (countChecked.length === $scope.tasks.length);
+                $scope.selectAll = (checkCount === $scope.tasks.length);
             };
             $scope.countCheckedDelete = function () {
                 var count = _.filter($scope.tasks, function (d) {
@@ -360,6 +377,12 @@
                 // });
                 return count.length;
             };
+            $scope.checkedCount=function () {
+                return $scope.tasks.filter(function (count) {
+                    return count.selected;
+                }).length
+
+            };
             /* ~~ */
             $scope.selectTask = function (task, id) {
                 console.log(task);
@@ -367,6 +390,8 @@
                 $scope.clickedTask.startDateObject = new Date($scope.clickedTask.startDate);
                 $scope.clickedTask.dueDateObject = new Date($scope.clickedTask.dueDate);
                 $scope.clickedTaskID = id;
+                $scope.clickedTask.projectId = task.project._id;
+                $scope.clickedTask.assigneeId=task.assignee._id;
                 console.log($scope.clickedTaskID);
                 /* goi API project*/
                 $http.get('/project')
@@ -374,6 +399,16 @@
                         if (res && res.data && res.data.length > 0) {
                             // nho reformat data
                             $scope.projects = res.data;
+                        }
+                    })
+                    .catch(function (err) {
+                        console.error(err);
+                    });
+                $http.get('/user')
+                    .then(function (res) {
+                        if (res && res.data && res.data.length > 0) {
+                            // nho reformat data
+                            $scope.users= res.data;
                         }
                     })
                     .catch(function (err) {
@@ -411,6 +446,7 @@
                 if ($scope.addTask.tags.length === 0) {
                     return;
                 }
+                /* sua name: addTask.tags=>newTag*/
                 $scope.inputTags.push({name: $scope.addTask.tags});
                 $scope.addTask.tags = '';
             };
@@ -433,13 +469,13 @@
             };
             // $scope.inputTags.push({name:'Tag Text'})
             $scope.deleteTag = function (key) {
-                if ($scope.inputTags.length > 0 &&
+                if ($scope.addTask.tags.length > 0 &&
                     $scope.addTask.tags.length === 0 &&
                     key === undefined) {
-                    $scope.inputTags.pop();
+                    $scope.addTask.tags.pop();
 
                 } else if (key !== undefined) {
-                    $scope.inputTags.splice(key, 1);
+                    $scope.addTask.tags.splice(key, 1);
                 }
             };
             $scope.deleteTagEdit=function(key){
@@ -571,7 +607,7 @@
                             item._id = obj._id;
                             item.name = obj.name;
                             item.description = obj.description;
-                            item.assignee = obj.assignee;
+                            item.assigner = obj.assignee;
                             item.startDate = obj.startDate;
                             item.dueDate = obj.dueDate;
                             item.status = obj.status;
@@ -582,7 +618,7 @@
                             result.push(item);
                         });
 
-                        $scope.tasks = result;
+                        $scope.tasks = result.reverse();
 
                         // $scope.tasks = result;
                     })
@@ -593,8 +629,19 @@
             $scope.getTaskList();
 
             $scope.createTask=function (newTask) {
-
                 return $http.post('/task',newTask)
+                    .then(function () {
+                        Flash.create('Them thanh cong',newTask);
+                        $scope.getTaskList();
+                    },function (error) {
+                        console.log('error',error);
+                    })
+                    .catch(function (err){
+                        console.error(err);
+                    });
+            };
+            $scope.editTask=function (selectedTask) {
+                return $http.put('/task',selectedTask)
                     .then(function (res) {
                         // $scope.tasks=res && res.data;
                         $scope.getTaskList();
@@ -604,6 +651,7 @@
                     .catch(function (err){
                         console.error(err);
                     });
+
             };
             $scope.editTask=function (updateTask) {
                 return $http.put('/task', updateTask)
@@ -683,19 +731,40 @@
                     });
             };
             $scope.deleteComment=function (selectedComment) {
-                var requestBody = {
-                    commentBody: selectedComment
-                };
-                return $http.delete('task/'+ $scope.clickedTask._id+'/comment/'+ selectedComment,requestBody)
+                // var requestBody = {
+                //     commentBody: selectedComment
+                // };
+                return $http.delete('task/'+ $scope.clickedTask._id+'/comment/'+ selectedComment._id)
                     .then(function (res) {
-                        $scope.tasks=res &&res.data;
-                        $scope.getTaskList();
+                        $scope.getTaskList()
+                            .then(function () {
+                                var foundItem = _.find($scope.tasks, function (task){
+                                    return task._id === $scope.clickedTaskID;
+                                });
+                                $scope.clickedTask.comments = foundItem.comments;
+                            });
                     }, function (error) {
                         console.log('error',error);
                     })
                     .catch(function (err) {
                         console.error(err);
                     });
+            };
+            $scope.reloadData=function () {
+                $route.reload();
+
+            };
+            $scope.pageChanged=function () {
+
+            };
+            $scope.countComment=function () {
+                if ($scope.clickedTask.comments) {
+                    if ($scope.clickedTask.comments.length < 2) {
+                        return 'comment'
+                    } else {
+                        return 'comments'
+                    }
+                }
             };
         })
 

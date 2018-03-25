@@ -1,74 +1,63 @@
  <div class="card-body" ng-controller="TaskCtrl">
     <menu type="toolbar" class="action-bar">
-        <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#exampleModalCenter" ng-click="addTaskFunction()" ng-hide="search">
-            <i class="fa fa-plus"></i>Add
+        <button class="btn btn-outline-success" data-toggle="modal" data-target="#exampleModalCenter" ng-click="addTaskFunction()" ng-hide="search">
+            <i class="fa fa-plus"></i>
+            <span>Add</span>
         </button>
-        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModalDeleteAll" ng-hide="search" ng-disabled="!countCheckedDelete()">
-            <i class="fa fa-trash-o"></i>Delete
+        <button class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModalDeleteAll" ng-hide="search" ng-disabled="!countCheckedDelete()">
+            <i class="fa fa-trash-o"></i>
+            <span>Delete</span>
         </button>
         <button type="button" class="btn btn-outline-info " ng-click="search = true" ng-hide="search">
-            <i class="fa fa-search"></i>Search
+            <i class="fa fa-search"></i>
+            <span>Search</span>
         </button>
-        <button type="button" class="btn btn-outline-info" ng-click="reloadData()" ng-hide="search">
-            <i class="fa fa-refresh"></i> Refresh
+        <button type="button" class="btn btn-info" ng-click="reloadData()" ng-hide="search">
+            <i class="fa fa-refresh"></i>
+            <span>Refresh</span>
         </button>
     </menu>
-        <div class="search" ng-show="search">
-            <input class="form-control" type="text" id="search" ng-model="searchText"/>
-                <span class="input-group-btn">
-                    <button class="btn btn-outline-dark" type="submit" ng-click="search = !search">
-                  <span class="fa fa-close"></span>
-                 </button>
-                </span>
-        </div>
+        <form class="search" ng-show="search">
+            <input class="search-action" ng-model="searchText"/>
+                    <i class="fa fa-search"></i>
+                    <i class="fa fa-close" type="submit" ng-click="search = !search"></i>
+        </form>
         <div class="table table-responsive" style="overflow-y: auto; height: 500px;">
-         <table class="table table-bordered table-fixed">
+         <table class="table table-bordered table-hover">
             <thead>
             <tr class="text-center">
-                <th><input type="checkbox" ng-model="selectAll" ng-click="checkAll()"/></th>
-                <th >STT</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Assigner</th>
-                <th>Start date</th>
-                <th>Due date</th>
-                <th>Project name</th>
-                <th>Status</th>
-                <th>Tags</th>
-                <th>Comment</th>
-                <th>Actions</th>
-                <!--<th style="width: 3%"><input type="checkbox" ng-model="selectedAll" ng-click="checkAll()"/></th>-->
-                <!--<th style="width: 4%;">STT</th>-->
-                <!--<th style="width: 10%;">Name</th>-->
-                <!--<th style="width: 14%;">Description</th>-->
-                <!--<th style="width: 16%;">Assigner</th>-->
-                <!--<th style="width: 5%">Start date</th>-->
-                <!--<th style="width: 5%;">Due date</th>-->
-                <!--<th style="width: 10%">Project name</th>-->
-                <!--<th style="width: 5%">Status</th>-->
-                <!--<th style="width: 8%;">Tags</th>-->
-                <!--<th style="width: 8%">Comment</th>-->
-                <!--<th style="width: 12%;">Actions</th>-->
-
+                <th class="column-task width-3"><input type="checkbox" ng-model="selectAll" ng-click="checkAll()"/></th>
+                <th class="column-task width-3">STT</th>
+                <th class="column-task width-10">Name</th>
+                <th class="column-task width-13">Description</th>
+                <th class="column-task width-10">Assigner</th>
+                <th class="column-task width-7"> Start date</th>
+                <th class="column-task width-7">Due date</th>
+                <th class="column-task width-10">Project name</th>
+                <th class="column-task width-7">Status</th>
+                <th class="column-task width-10">Tags</th>
+                <th class="column-task width-7">Comment</th>
+                <th class="column-task width-13">Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="task in tasks | filter:searchText:strict| limitTo: itemsPerPage: itemsPerPage*(currentPage - 1)">
             <!--<tr ng-repeat="task in tasks track by task._id | filter:searchText| limitTo: itemsPerPage: itemsPerPage*(currentPage - 1)">-->
-                <td ><input type="checkbox"  ng-model="task.selected" ng-click="checkIndividualTask()"></td>
-                <td>{{$index+1}}</td>
-                <td>{{task.name}}</td>
-                <td>{{task.description}}</td>
-                <td>{{task.assignee.email}}</td>
-                <td>{{task.startDate|date:"dd/MM/yyyy"}}</td>
-                <td>{{task.dueDate|date:'dd/MM/yyyy'}}</td>
-                <td>{{task.project.name}}</td>
+                <td class="text-center"><input type="checkbox"  ng-model="task.selected" ng-click="setCheckAll(task)"></td>
+                <td class="text-center">{{$index+1}}</td>
+                <td class="column-td">{{task.name}}</td>
+                <td class="column-td">{{task.description}}</td>
+                <td class="column-td">{{task.assigner.email}}</td>
+                <td class="column-td">{{task.startDate|date:"dd/MM/yyyy"}}</td>
+                <td class="column-td">{{task.dueDate|date:'dd/MM/yyyy'}}</td>
+                <td class="column-td">{{task.project.name}}</td>
                 <td><span class="progress-bar" ng-class="labelColor(task.status)">{{task.status}}</span></td>
                 <!--<td>{{task.tags}}</td>-->
-                <td>
+                <td  class="column-td">
                     <span ng-repeat="tag in task.tags track by tag.name" class="tag-name">
+                         <span class="delete-tag-table">&#8226;</span>
                         <span ng-click="tag.action(task)">{{tag.name}}</span>
-                          <span class="delete-tag">&times;</span>
+
                     </span>
                 </td>
                 <td class="text-center">
@@ -77,9 +66,9 @@
                         <!--<i class="fa fa-comment fa-2x"></i>-->
                     <!--</button>-->
 
-                        <div class="notifications" style="margin-top: -135px; margin-left: -155px; float: left;">
+                        <div class="notifications">
                             <div class="new-message" >
-                                <a  target="_top" style="float: left;">{{task.comments.length}}</a>
+                                <a  target="_top" id="lengthComment">{{task.comments.length}}</a>
                             </div>
                             <div class="messages" data-toggle="modal" data-target="#exampleModalCenterComment" ng-click="selectTask(task, task._id)">
                                 <a  target="_top">Comment</a>
@@ -88,18 +77,20 @@
 
                 </td>
                 <td class="text-center">
-                    <button type="button" class="btn btn-outline-info btn-sm"  data-toggle="modal" data-target="#exampleModal" ng-click="selectTask(task, $index)">
-                        <i class="fa fa-pencil"></i>Edit
+                    <button type="button" class="btn btn-outline-info btn-sm"  data-toggle="modal" data-target="#exampleModal" ng-click="selectTask(task, task._id)">
+                        <i class="fa fa-pencil"></i>
+                        <span class="action-column">Edit</span>
                     </button>
-                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#exampleModalDelete1" ng-click="selectTask(task, $index)">
-                        <i class="fa fa-trash-o"></i>Delete
+                    <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#exampleModalDelete1" ng-click="selectTask(task, task._id)">
+                        <i class="fa fa-trash-o"></i>
+                        <span class="action-column">Delete</span>
                     </button>
                 </td>
             </tr>
             </tbody>
         </table>
         </div>
-     <ul style="margin-top: 20px;" uib-pagination boundary-links="true" total-items="tasks.length" ng-model="currentPage" max-size="maxSize" class="pagination-sm pull-right
+     <ul style="margin-top: 20px;" uib-pagination boundary-links="true" total-items="tasks.length" ng-change="pageChanged()" ng-model="currentPage" max-size="maxSize" class="pagination-sm pull-right
 " previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
 
         <!-- Modal -- create-->
@@ -116,45 +107,45 @@
                     <div class="modal-body">
                         <form class="align-content-center"  name="addForm">
                             <div class="form-group">
-                                <label  class="font-weight-bold">Name</label>
-                                <input type="text" class="form-control" placeholder="Task name" ng-model="addTask.name" name="name" required/>
+                                <label>Name (*)</label>
+                                <input  class="form-control" placeholder="Task name" ng-model="addTask.name" name="name" required/>
                                     <p ng-show="addForm.name.$invalid && !addForm.name.$pristine"> You task name required </p>
                             </div>
                             <div class="form-group">
-                                <label class="font-weight-bold">
+                                <label>
                                     Description</label>
                                 <textarea class="form-control"  ng-model="addTask.description"></textarea>
                             </div>
                             <div class="form-group">
-                               <label class="font-weight-bold">Assigner</label>
-                                <select class="form-control" ng-model="addTask.assignee" ng-options="item.name as item.name for item in users"></select>
+                               <label>Assigner</label>
+                                <select class="form-control" ng-model="addTask.assigneeId" ng-options="assignee._id as assignee.email for assignee in users"></select>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label  class="font-weight-bold">Start
+                                    <label>Start
                                         date</label>
                                     <div class="input-group date" id="datetimepicker1">
                                         <input type="date" class="form-control" name="addTask.startDate" id="startdate" placeholder="" ng-model="addTask.startDate">
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label class="font-weight-bold">Due date</label>
+                                    <label>Due date</label>
                                     <div clas="input-group date" id="datetimepicker2">
                                         <input type="date" class="form-control"  id="duetdate" placeholder="" ng-model="addTask.dueDate">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="font-weight-bold">Project Name</label>
+                                <label>Project Name</label>
                                 <select class="form-control" ng-model="addTask.projectId" ng-options="project._id as project.name for project in projects"></select>
                             </div>
                             <div class="form-group">
-                                <label class="font-weight-bold">Status</label>
+                                <label>Status</label>
                                 <select class="form-control" ng-model="addTask.status" ng-options="item.name as item.name for item in statususer">
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="font-weight-bold">Tags</label>
+                                <label>Tags</label>
                                 <div class="tag-input-ctn">
                                     <!--<div ng-repeat="(key,tag) in inputTags" class="input-tag">-->
                                     <div ng-repeat="(key,tag) in addTask.tags" class="input-tag">
@@ -163,7 +154,7 @@
                                     </div>
                                     <!--<input type="text" data-tag-input="" data-ng-model="addTask.tags" data-ng-style="{width:inputWidth}" data-new-tag="addTag()" data-delete-tag="deleteTag()">-->
                                     <!--<input type="text" tag-input="" ng-model="addTask.tags" ng-style="{width:inputWidth}" new-tag="addTagFunc(addTask.tags, inputTags);addTask.tags='';" delete-tag="deleteTag()" style="margin-top: 5px">-->
-                                    <input type="text" tag-input="" ng-model="newTag" ng-style="{width:inputWidth}" new-tag="addTagFunc(newTag, addTask.tags);newTag='';" delete-tag="deleteTag()" style="margin-top: 5px">
+                                    <input  tag-input="" ng-model="newTag" ng-style="{width:inputWidth}" new-tag="addTagFunc(newTag, addTask.tags);newTag='';" delete-tag="deleteTag()" style="margin-top: 5px">
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -186,7 +177,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                       <p style="color: #8b222a"> Do you want delete {{clickedTask.name}}???</p>
+                       <p>Do you want to delete <span class="message-delete"> task {{clickedTask.name}} ??? </span></p>
                     </div>
                     <div class="modal-footer">
                         <!--<button type="button" class="btn btn-outline-info" data-dismiss="modal" ng-click="delete()">Yes</button>-->
@@ -209,7 +200,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p> Do you want {{clickedTask.countCheckedDelete()}}</p>
+                        <p>Do yow want to delete <span>{{(tasks | filter:{selected: true}).length}}</span> task ???</p>
                     </div>
                     <div class="modal-footer">
                         <!--<button type="button" class="btn btn-outline-info" data-dismiss="modal" ng-click="remove()">Yes</button>-->
@@ -225,7 +216,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Task</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -233,43 +224,43 @@
                     <div class="modal-body">
                         <form class="align-content-center" name="editForm" novalidate>
                             <div class="form-group">
-                                <label  class="font-weight-bold">Name</label>
-                                <input type="text" class="form-control" placeholder="" required ng-model="clickedTask.name" name="name"/>
+                                <label>Name(*)</label>
+                                <input class="form-control" placeholder="" required ng-model="clickedTask.name" name="name"/>
                                 <p ng-show="editForm.name.$invalid && !editForm.name.$pristine"> You task name required</p>
                             </div>
                             <div class="form-group">
-                                <label class="font-weight-bold">
+                                <label>
                                     Description</label>
                                 <textarea class="form-control" ng-model="clickedTask.description"></textarea>
                             </div>
                             <div class="form-group">
-                                <label class="font-weight-bold">Assigner</label>
-                                <select class="form-control" ng-model="clickedTask.assignee" ng-options="item.name as item.name for item in users"></select>
+                                <label>Assigner</label>
+                                <select class="form-control" ng-model="clickedTask.assigneeId" ng-options="assignee._id as assignee.email for assignee in users"></select>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label  class="font-weight-bold">Start date</label>
+                                    <label>Start date</label>
                                     <div class="input-group date" id="datetimepicker3">
                                         <input type="date" class="form-control" id="startdate1" placeholder="" ng-model="clickedTask.startDateObject">
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label  class="font-weight-bold">Due date</label>
+                                    <label>Due date</label>
                                     <div clas="input-group date" id="datetimepicker">
                                         <input type="date" class="form-control" id="duetdate1" placeholder="" ng-model="clickedTask.dueDateObject">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="font-weight-bold">Project Name</label>
-                                <select class="form-control" ng-model="clickedTask.project" ng-options="project._id as project.name for project in projects"></select>
+                                <label>Project Name</label>
+                                <select class="form-control" ng-model="clickedTask.projectId" ng-options="project._id as project.name for project in projects"></select>
                             </div>
                             <div class="form-group">
-                                <label  class="font-weight-bold">Status</label>
+                                <label>Status</label>
                                 <select type="text" class="form-control" ng-model="clickedTask.status" ng-options=" item.name as item.name for item in statususer"></select>
                             </div>
                             <div class="form-group">
-                                <label class="font-weight-bold">Tags</label>
+                                <label>Tags</label>
                                 <div class="tag-input-ctn" class="form-control" >
                                     <!--<div data-ng-repeat="(key,tag) in inputTags" class="input-tag">-->
                                         <!--{{tag.name}}-->
@@ -280,12 +271,13 @@
                                         {{tag.name}}
                                         <div class="delete-tag" ng-click="deleteTagEdit(key)">&times;</div>
                                     </div>
-                                    <input type="text" tag-input="" ng-model="newTag" ng-style="{width:inputWidth}" new-tag="addTagFunc(newTag, clickedTask.tags);newTag='';" delete-tag="deleteTagEdit()">
+                                    <!--<input type="text" tag-input="" ng-model="newTag" ng-style="{width:inputWidth}" new-tag="addTagFunc(newTag, clickedTask.tags);newTag='';" delete-tag="deleteTagEdit()">-->
+                                    <input  tag-input="" ng-model="newTag" ng-style="{width:inputWidth}" new-tag="addTagFunc(newTag, clickedTask.tags);newTag='';" delete-tag="deleteTagEdit()" style="margin-top: 5px">
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <!--<button type="button" class="btn btn-outline-primary" data-dismiss="modal" ng-click="update()" ng-disabled="editForm.$invalid"><i class="fa fa-save"></i>Save</button>-->
-                                <button type="button" class="btn btn-outline-primary" data-dismiss="modal" ng-click="updateTask(clickedTask)" ng-disabled="editForm.$invalid"><i class="fa fa-save"></i>Save</button>
+                                <!--<button type="button" class="btn btn-outline-primary" data-dismiss="modal" ng-click="updateTask(clickedTask)" ng-disabled="editForm.$invalid"><i class="fa fa-save"></i>Save</button>-->
+                                <button class="btn btn-outline-primary" data-dismiss="modal" ng-click="editTask(clickedTask)" ng-disabled="editForm.$invalid"><i class="fa fa-save"></i>Save</button>
                                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i class="fa fa-times"></i>Cancel</button>
                             </div>
                         </form>
@@ -310,7 +302,7 @@
                         <!--<text-angular ng-model="addTask.comments" required class=""></text-angular>-->
                         <text-angular ng-model="newComment" required class=""></text-angular>
                         <hr/>
-                        <h3>{{clickedTask.comments.length}} Comments</h3>
+                        <h3>{{clickedTask.comments.length}} {{countComment()}}</h3>
                         <span  class="comment">
                             <span ng-repeat="comment in clickedTask.comments">
                             <img src="{{comment.commentUser.image}}"/>
@@ -319,7 +311,7 @@
                             </div>
                                 <!--{{comment.commentUser.email}}-->
                             <li class="small" style="margin-left: 350px;">
-                                <a id="deleteComment" ng-click="deleteComment(index)">Delete</a>
+                                <a id="deleteComment" ng-click="deleteComment(comment)">Delete</a>
                                 <!--<a id="deleteComment" ng-click="deleteComment()">Delete</a>-->
                             </li>
                             </span>

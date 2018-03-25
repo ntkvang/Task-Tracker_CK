@@ -15,7 +15,6 @@
     $locationProvider.hashPrefix('');
     $httpProvider.interceptors.push('errorHandlerInterceptor');
   }
-
   errorHandlerInterceptor.$inject = ['$q', '$window'];
   function errorHandlerInterceptor($q, $window) {
     return {
